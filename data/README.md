@@ -18,9 +18,9 @@ Do not commit large raw datasets or sensitive wildlife-location data to this rep
 
 ## Current map service
 
-The app visualizes ESA WorldCover 2021 v200 through the Terrascope WMS service:
+The app visualizes ESA WorldCover 2021 v200 through the Terrascope WMS service `https://titiler.terrascope.be/wms`:
 
-- Layer: `WORLDCOVER_2021_MAP`
+- Layer: `esa-worldcover-map-10m-2021-v2_map`
 - Reference year: 2021
 - Nominal resolution: 10 m
 - License: CC BY 4.0

@@ -4,9 +4,11 @@ An open-source GIS research project exploring what evidence is needed to assess 
 
 > **Research caution:** Ujung Kulon remains the Javan rhino's primary habitat. A second-habitat proposal is still under study. This project is an exploratory GIS prototype—not an official assessment, validated suitability model, survival-probability prediction, or translocation recommendation.
 
-## MVP 0.1
+## MVP 0.2
 
-The first version is a Streamlit web app with an interactive locator map showing two official park reference points: the Alas Purwo National Park Office and Rowobendo entrance. These points are for orientation only; they are not a park boundary or habitat-suitability result.
+The Streamlit app includes an interactive regional map with an ESA WorldCover 2021 v200 land-cover overlay (10 m nominal resolution), a class legend, and two official park reference points.
+
+The land-cover overlay is for regional context only. It is not clipped to an authoritative Alas Purwo National Park boundary, and it must not be interpreted as a habitat-suitability result. The app does not calculate suitability scores or area statistics.
 
 ## Run locally
 
@@ -15,7 +17,7 @@ Python 3.10 or newer is recommended.
 ```bash
 python -m venv .venv
 # Windows:
-.venv\Scripts\activate
+.venv\\Scripts\\activate
 # macOS / Linux:
 source .venv/bin/activate
 
@@ -53,7 +55,11 @@ See [docs/methodology.md](docs/methodology.md) for the current research approach
 
 ## Data and attribution
 
-The map uses OpenStreetMap tiles and attribution. Reference coordinates are taken from the official Alas Purwo National Park website. Dataset sources, licenses, dates, CRS and processing steps will be documented before analytical use. Sensitive wildlife-location data will not be published.
+The basemap uses OpenStreetMap tiles and attribution. The land-cover overlay uses ESA WorldCover 2021 v200 through Terrascope WMS. Include this attribution when using the layer in a map:
+
+`© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium`
+
+WorldCover is licensed under CC BY 4.0. Park reference coordinates are taken from the official Alas Purwo National Park website. Sensitive wildlife-location data will not be published.
 
 ## License
 

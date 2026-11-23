@@ -1,5 +1,7 @@
 import streamlit as st
 import folium
+import requests
+import xml.etree.ElementTree as ET
 from streamlit_folium import st_folium
 
 st.set_page_config(
@@ -177,6 +179,81 @@ with left:
         "Class colors follow the official ESA WorldCover 2021 v200 palette. "
         "The legend describes mapped land-cover classes, not habitat quality."
     )
+
+    with st.expander("🔧 Troubleshooting · Test map service"):
+        st.write(
+            "Run a server-side check from the Streamlit app environment. "
+            "This tests the WMS capabilities and requests one sample map image."
+        )
+        if st.button("Test ESA WorldCover connection", key="test_worldcover"):
+            capabilities_url = WORLDCOVER_WMS_URL
+            try:
+                cap_response = requests.get(
+                    capabilities_url,
+                    params={
+                        "service": "WMS",
+                        "request": "GetCapabilities",
+                        "version": "1.1.1",
+                    },
+                    timeout=20,
+                )
+                st.write(f"GetCapabilities HTTP status: **{cap_response.status_code}**")
+                st.write(f"Response content type: `{cap_response.headers.get('Content-Type', 'unknown')}`")
+                cap_response.raise_for_status()
+
+                root = ET.fromstring(cap_response.content)
+                layer_names = [
+                    node.text.strip()
+                    for node in root.findall(".//{*}Layer/{*}Name")
+                    if node.text
+                ]
+                matching_layers = [
+                    name for name in layer_names
+                    if "worldcover" in name.lower()
+                ]
+                layer_found = WORLDCOVER_LAYER in layer_names
+                if layer_found:
+                    st.success(f"Layer found: {WORLDCOVER_LAYER}")
+                else:
+                    st.error(f"Expected layer not found: {WORLDCOVER_LAYER}")
+                if matching_layers:
+                    st.write("WorldCover layers advertised by this service:")
+                    st.code("\\n".join(matching_layers[:30]))
+                else:
+                    st.warning("No layer name containing 'worldcover' was found.")
+
+                map_response = requests.get(
+                    capabilities_url,
+                    params={
+                        "service": "WMS",
+                        "request": "GetMap",
+                        "version": "1.1.1",
+                        "layers": WORLDCOVER_LAYER,
+                        "styles": "",
+                        "srs": "EPSG:4326",
+                        "bbox": "114.20,-8.70,114.50,-8.10",
+                        "width": "512",
+                        "height": "512",
+                        "format": "image/png",
+                        "transparent": "TRUE",
+                    },
+                    timeout=30,
+                )
+                st.write(f"GetMap HTTP status: **{map_response.status_code}**")
+                st.write(f"Map response content type: `{map_response.headers.get('Content-Type', 'unknown')}`")
+                if map_response.ok and "image" in map_response.headers.get("Content-Type", "").lower():
+                    st.success("The WMS returned an image successfully.")
+                    st.image(map_response.content, caption="WMS diagnostic sample around Alas Purwo")
+                else:
+                    st.error("The WMS did not return an image. Response preview:")
+                    st.code(map_response.text[:1500])
+            except requests.RequestException as exc:
+                st.error(f"Network request failed: {exc}")
+            except ET.ParseError:
+                st.error("The service response was not valid WMS XML.")
+            except Exception as exc:
+                st.error(f"Diagnostic failed: {type(exc).__name__}: {exc}")
+
     st.markdown(
         f'<p class="small-muted">{WORLDCOVER_ATTRIBUTION}. '
         'Source: <a href="https://esa-worldcover.org/en/data-access" '

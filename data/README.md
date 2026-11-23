@@ -14,8 +14,21 @@ Before a dataset is used, record:
 - License and attribution requirements
 - Processing steps and any known limitations
 
-Do not commit large raw datasets or sensitive wildlife-location data to this repository.
-Prefer documented download instructions, public APIs, or small derived samples where licensing permits.
+Do not commit large raw datasets or sensitive wildlife-location data to this repository. Prefer documented download instructions, public APIs, or small derived samples where licensing permits.
+
+## Current map service
+
+The app visualizes ESA WorldCover 2021 v200 through the Terrascope WMS service:
+
+- Layer: `WORLDCOVER_2021_MAP`
+- Reference year: 2021
+- Nominal resolution: 10 m
+- License: CC BY 4.0
+- Data access: https://esa-worldcover.org/en/data-access
+- Dataset DOI: https://doi.org/10.5281/zenodo.7254221
+- Required map attribution: © ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium
+
+The WMS provides rendered map images for visualization, not analysis-ready raster values. For raster analysis, download the underlying classified data from the official data access channels. The current app layer is a regional view and is not clipped to a park boundary.
 
 ## Planned data themes
 
@@ -26,4 +39,4 @@ Prefer documented download instructions, public APIs, or small derived samples w
 - Roads, settlements and human-access indicators
 - Biodiversity records, subject to sensitivity and data-sharing restrictions
 
-No habitat-suitability dataset is included in MVP 0.1.
+No habitat-suitability dataset is included in this project.

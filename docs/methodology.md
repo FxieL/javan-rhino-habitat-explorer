@@ -44,7 +44,7 @@ The app now includes an interactive regional land-cover overlay using **ESA Worl
 - Input satellite missions: Sentinel-1 and Sentinel-2
 - Classification: 11 discrete land-cover classes
 - License: Creative Commons Attribution 4.0 International (CC BY 4.0)
-- Access in the app: Terrascope WMS layer `WORLDCOVER_2021_MAP`
+- Access in the app: Terrascope WMS layer `esa-worldcover-map-10m-2021-v2_map` via `https://titiler.terrascope.be/wms`
 - Dataset DOI: https://doi.org/10.5281/zenodo.7254221
 - Official data access and attribution: https://esa-worldcover.org/en/data-access
 

@@ -6,7 +6,7 @@ An open-source GIS research project exploring what evidence is needed to assess 
 
 ## MVP 0.2
 
-The Streamlit app includes an interactive regional map with an ESA WorldCover 2021 v200 land-cover overlay (10 m nominal resolution), a class legend, and two official park reference points.
+The Streamlit app includes an interactive regional map with an ESA WorldCover 2021 v200 land-cover overlay (10 m nominal resolution), served through Terrascope WMS, a class legend, and two official park reference points.
 
 The land-cover overlay is for regional context only. It is not clipped to an authoritative Alas Purwo National Park boundary, and it must not be interpreted as a habitat-suitability result. The app does not calculate suitability scores or area statistics.
 
@@ -55,7 +55,7 @@ See [docs/methodology.md](docs/methodology.md) for the current research approach
 
 ## Data and attribution
 
-The basemap uses OpenStreetMap tiles and attribution. The land-cover overlay uses ESA WorldCover 2021 v200 through Terrascope WMS. Include this attribution when using the layer in a map:
+The basemap uses OpenStreetMap tiles and attribution. The land-cover overlay uses ESA WorldCover 2021 v200 through the Terrascope WMS endpoint `https://titiler.terrascope.be/wms`, layer `esa-worldcover-map-10m-2021-v2_map`. Include this attribution when using the layer in a map:
 
 `© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data (2021) processed by ESA WorldCover consortium`
 

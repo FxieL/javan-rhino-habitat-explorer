@@ -26,7 +26,7 @@ LAND_COVER_CLASSES = [
     (100, "Moss and lichen", "#fae6a0"),
 ]
 
-WORLDCOVER_WMS_URL = "https://titiler.terrascope.be/wms"
+WORLDCOVER_WMS_URL = "https://services.terrascope.be/wms/v2"
 WORLDCOVER_LAYER = "WORLDCOVER_2021_MAP"
 WORLDCOVER_ATTRIBUTION = (
     "© ESA WorldCover project 2021 / Contains modified Copernicus Sentinel data "

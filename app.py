@@ -183,23 +183,30 @@ with left:
     with st.expander("🔧 Troubleshooting · Test map service"):
         st.write(
             "Run a server-side check from the Streamlit app environment. "
-            "This tests the WMS capabilities and requests one sample map image."
+            "The test follows Terrascope's documented WMS endpoint syntax, "
+            "checks the advertised layer, then requests a sample image."
         )
         if st.button("Test ESA WorldCover connection", key="test_worldcover"):
-            capabilities_url = WORLDCOVER_WMS_URL
             try:
+                # Terrascope documents this canonical GetCapabilities request
+                # without an explicit VERSION parameter.
                 cap_response = requests.get(
-                    capabilities_url,
+                    WORLDCOVER_WMS_URL,
                     params={
                         "service": "WMS",
                         "request": "GetCapabilities",
-                        "version": "1.1.1",
                     },
-                    timeout=20,
+                    timeout=30,
                 )
                 st.write(f"GetCapabilities HTTP status: **{cap_response.status_code}**")
-                st.write(f"Response content type: `{cap_response.headers.get('Content-Type', 'unknown')}`")
-                cap_response.raise_for_status()
+                st.write(
+                    f"Response content type: "
+                    f"`{cap_response.headers.get('Content-Type', 'unknown')}`"
+                )
+                if not cap_response.ok:
+                    st.error("Terrascope rejected the GetCapabilities request.")
+                    st.code(cap_response.text[:2000] or "(empty response)")
+                    st.stop()
 
                 root = ET.fromstring(cap_response.content)
                 layer_names = [
@@ -222,31 +229,36 @@ with left:
                 else:
                     st.warning("No layer name containing 'worldcover' was found.")
 
+                # WMS 1.3.0 uses CRS (not SRS). For EPSG:4326 its BBOX
+                # axis order is latitude, longitude.
                 map_response = requests.get(
-                    capabilities_url,
+                    WORLDCOVER_WMS_URL,
                     params={
                         "service": "WMS",
                         "request": "GetMap",
-                        "version": "1.1.1",
+                        "version": "1.3.0",
                         "layers": WORLDCOVER_LAYER,
                         "styles": "",
-                        "srs": "EPSG:4326",
-                        "bbox": "114.20,-8.70,114.50,-8.10",
+                        "crs": "EPSG:4326",
+                        "bbox": "-8.70,114.20,-8.10,114.50",
                         "width": "512",
                         "height": "512",
                         "format": "image/png",
                         "transparent": "TRUE",
                     },
-                    timeout=30,
+                    timeout=45,
                 )
                 st.write(f"GetMap HTTP status: **{map_response.status_code}**")
-                st.write(f"Map response content type: `{map_response.headers.get('Content-Type', 'unknown')}`")
+                st.write(
+                    f"Map response content type: "
+                    f"`{map_response.headers.get('Content-Type', 'unknown')}`"
+                )
                 if map_response.ok and "image" in map_response.headers.get("Content-Type", "").lower():
                     st.success("The WMS returned an image successfully.")
                     st.image(map_response.content, caption="WMS diagnostic sample around Alas Purwo")
                 else:
                     st.error("The WMS did not return an image. Response preview:")
-                    st.code(map_response.text[:1500])
+                    st.code(map_response.text[:2000] or "(empty response)")
             except requests.RequestException as exc:
                 st.error(f"Network request failed: {exc}")
             except ET.ParseError:

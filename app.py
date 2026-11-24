@@ -225,7 +225,7 @@ with left:
                     st.error(f"Expected layer not found: {WORLDCOVER_LAYER}")
                 if matching_layers:
                     st.write("WorldCover layers advertised by this service:")
-                    st.code("\\n".join(matching_layers[:30]))
+                    st.code("\n".join(matching_layers[:30]))
                 else:
                     st.warning("No layer name containing 'worldcover' was found.")
 
